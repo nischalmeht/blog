@@ -2,23 +2,16 @@ import express from "express";
 import dotenv from "dotenv";
 // import cors from "cors";
 import cors from "cors"
-import connectDb from "./utils/db";
-import userRoutes from "./routes/user";
-import { v2 as cloudinary } from "cloudinary";
-dotenv.config();
-cloudinary.config({
-  cloud_name: process.env.Cloud_Name,
-  api_key: process.env.Cloud_Api_Key,
-  api_secret: process.env.Cloud_Api_Secret,
-});
-const app = express();
+// import {sql} from "./utils/db";
 
+dotenv.config();
+const app = express();
 
 app.use(express.json());
 app.use(cors());
-connectDb();
+// connectDb();
 
-app.use("/api/v1", userRoutes);
+
 const port = process.env.PORT;
 
 app.listen(port, () => {

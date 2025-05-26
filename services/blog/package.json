@@ -1,8 +1,7 @@
 {
-  "name": "user",
+  "name": "blog",
   "version": "1.0.0",
   "main": "server.js",
-  "type":"module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
@@ -14,15 +13,17 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@neondatabase/serverless": "^1.0.0",
     "@types/axios": "^0.14.4",
     "@types/cors": "^2.8.18",
-    "@types/dotenv": "^6.1.1",
+    "@types/dotenv": "^8.2.3",
     "@types/express": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.9",
-    "@types/mongoose": "^5.11.96",
+    "@types/mongoose": "^5.11.97",
     "@types/multer": "^1.4.12",
+    "@types/nodemon": "^3.1.1",
+    "@types/typescript": "^2.0.0",
     "axios": "^1.9.0",
-    "cloudinary": "^2.6.1",
     "concurrently": "^9.1.2",
     "cors": "^2.8.5",
     "datauri": "^4.1.0",
@@ -32,6 +33,7 @@
     "mongoose": "^8.15.0",
     "multer": "^2.0.0",
     "nodemon": "^3.1.10",
+    "redis": "^5.1.0",
     "typescript": "^5.8.3"
   }
 }
