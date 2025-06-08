@@ -1,10 +1,10 @@
-import TryCatch from "../utils/TryCatch";
-import User from "../model/user";
+import TryCatch from "../utils/TryCatch.js";
+import User from "../model/user.js";
 import jwt from "jsonwebtoken";
 import { AuthenticatedRequest } from "../middleware/isAuth.js";
 import { v2 as cloudinary } from "cloudinary";
 import axios from "axios";
-import getBuffer from "../utils/dataUri";
+import getBuffer from "../utils/dataUri.js";
 
 export const myProfile = TryCatch(async (req: AuthenticatedRequest, res) => {
     const user = req.user;

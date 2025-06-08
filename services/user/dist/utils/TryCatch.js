@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const TryCatch = (handler) => {
     return async (req, res, next) => {
         try {
@@ -12,4 +10,4 @@ const TryCatch = (handler) => {
         }
     };
 };
-exports.default = TryCatch;
+export default TryCatch;

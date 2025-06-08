@@ -1,26 +1,21 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const dotenv_1 = __importDefault(require("dotenv"));
+import express from "express";
+import dotenv from "dotenv";
 // import cors from "cors";
-const cors_1 = __importDefault(require("cors"));
-const db_1 = __importDefault(require("./utils/db"));
-const user_1 = __importDefault(require("./routes/user"));
-const cloudinary_1 = require("cloudinary");
-dotenv_1.default.config();
-cloudinary_1.v2.config({
+import cors from "cors";
+import connectDb from "./utils/db.js";
+import userRoutes from "./routes/user.js";
+import { v2 as cloudinary } from "cloudinary";
+dotenv.config();
+cloudinary.config({
     cloud_name: process.env.Cloud_Name,
     api_key: process.env.Cloud_Api_Key,
     api_secret: process.env.Cloud_Api_Secret,
 });
-const app = (0, express_1.default)();
-app.use(express_1.default.json());
-app.use((0, cors_1.default)());
-(0, db_1.default)();
-app.use("/api/v1", user_1.default);
+const app = express();
+app.use(express.json());
+app.use(cors());
+connectDb();
+app.use("/api/v1", userRoutes);
 const port = process.env.PORT;
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);

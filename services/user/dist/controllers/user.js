@@ -1,20 +1,14 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateProfilePic = exports.loginUser = exports.updateUser = exports.getUserProfile = exports.myProfile = void 0;
-const TryCatch_1 = __importDefault(require("../utils/TryCatch"));
-const user_1 = __importDefault(require("../model/user"));
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const cloudinary_1 = require("cloudinary");
-const dataUri_1 = __importDefault(require("../utils/dataUri"));
-exports.myProfile = (0, TryCatch_1.default)(async (req, res) => {
+import TryCatch from "../utils/TryCatch.js";
+import User from "../model/user.js";
+import jwt from "jsonwebtoken";
+import { v2 as cloudinary } from "cloudinary";
+import getBuffer from "../utils/dataUri.js";
+export const myProfile = TryCatch(async (req, res) => {
     const user = req.user;
     res.json(user);
 });
-exports.getUserProfile = (0, TryCatch_1.default)(async (req, res) => {
-    const user = await user_1.default.findById(req.params.id);
+export const getUserProfile = TryCatch(async (req, res) => {
+    const user = await User.findById(req.params.id);
     if (!user) {
         res.status(404).json({
             message: "No user with this id",
@@ -23,16 +17,16 @@ exports.getUserProfile = (0, TryCatch_1.default)(async (req, res) => {
     }
     res.json(user);
 });
-exports.updateUser = (0, TryCatch_1.default)(async (req, res) => {
+export const updateUser = TryCatch(async (req, res) => {
     const { name, instagram, facebook, linkedin, bio } = req.body;
-    const user = await user_1.default.findByIdAndUpdate(req.user?._id, {
+    const user = await User.findByIdAndUpdate(req.user?._id, {
         name,
         instagram,
         facebook,
         linkedin,
         bio,
     }, { new: true });
-    const token = jsonwebtoken_1.default.sign({ user }, process.env.JWT_SEC, {
+    const token = jwt.sign({ user }, process.env.JWT_SEC, {
         expiresIn: "5d",
     });
     res.json({
@@ -41,7 +35,7 @@ exports.updateUser = (0, TryCatch_1.default)(async (req, res) => {
         user,
     });
 });
-exports.loginUser = (0, TryCatch_1.default)(async (req, res) => {
+export const loginUser = TryCatch(async (req, res) => {
     // const { code } = req.body;
     // if (!code) {
     //   res.status(400).json({
@@ -55,15 +49,15 @@ exports.loginUser = (0, TryCatch_1.default)(async (req, res) => {
     //   `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`
     // );
     const { email, name, } = req.body;
-    let user = await user_1.default.findOne({ email });
+    let user = await User.findOne({ email });
     if (!user) {
-        user = await user_1.default.create({
+        user = await User.create({
             name,
             email,
             // image: picture,
         });
     }
-    const token = jsonwebtoken_1.default.sign({ user }, process.env.JWT_SEC, {
+    const token = jwt.sign({ user }, process.env.JWT_SEC, {
         expiresIn: "5d",
     });
     res.status(200).json({
@@ -72,7 +66,7 @@ exports.loginUser = (0, TryCatch_1.default)(async (req, res) => {
         user,
     });
 });
-exports.updateProfilePic = (0, TryCatch_1.default)(async (req, res) => {
+export const updateProfilePic = TryCatch(async (req, res) => {
     const file = req.file;
     if (!file) {
         res.status(400).json({
@@ -80,20 +74,20 @@ exports.updateProfilePic = (0, TryCatch_1.default)(async (req, res) => {
         });
         return;
     }
-    const fileBuffer = (0, dataUri_1.default)(file);
+    const fileBuffer = getBuffer(file);
     if (!fileBuffer || !fileBuffer.content) {
         res.status(400).json({
             message: "Failed to generate buffer",
         });
         return;
     }
-    const cloud = await cloudinary_1.v2.uploader.upload(fileBuffer.content, {
+    const cloud = await cloudinary.uploader.upload(fileBuffer.content, {
         folder: "blogs",
     });
-    const user = await user_1.default.findByIdAndUpdate(req.user?._id, {
+    const user = await User.findByIdAndUpdate(req.user?._id, {
         image: cloud.secure_url,
     }, { new: true });
-    const token = jsonwebtoken_1.default.sign({ user }, process.env.JWT_SEC, {
+    const token = jwt.sign({ user }, process.env.JWT_SEC, {
         expiresIn: "5d",
     });
     res.json({
