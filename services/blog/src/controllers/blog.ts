@@ -137,7 +137,7 @@ export const getAllBlogs = TryCatch(async (req, res) => {
   
       res.json({
         message: "Blog Saved",
-      });
+      }); 
       return;
     } else {
       await sql`DELETE FROM savedblogs WHERE userid = ${userid} AND blogid = ${blogid}`;
