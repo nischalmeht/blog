@@ -4,10 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getSavedBlog = exports.saveBlog = exports.deleteComment = exports.getAllComments = exports.addComment = exports.getSingleBlog = exports.getAllBlogs = void 0;
-// import { redisClient } from "../server.js";
+const server_js_1 = require("../server.js");
 const db_js_1 = require("../utils/db.js");
 const TryCatch_js_1 = __importDefault(require("../utils/TryCatch.js"));
-const server_js_1 = require("../server.js");
 const axios_1 = __importDefault(require("axios"));
 exports.getAllBlogs = (0, TryCatch_js_1.default)(async (req, res) => {
     const { searchQuery = "", category = "" } = req.query;
@@ -27,7 +26,7 @@ exports.getAllBlogs = (0, TryCatch_js_1.default)(async (req, res) => {
     }
     else if (category) {
         blogs =
-            await (0, db_js_1.sql) `SELECT * FROM blogs WHERE category=${category} ORDER BY create_at DESC`;
+            await (0, db_js_1.sql) `SELECT * FROM blogs `;
     }
     else {
         blogs = await (0, db_js_1.sql) `SELECT * FROM blogs ORDER BY create_at DESC`;

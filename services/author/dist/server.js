@@ -5,20 +5,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
-// import cors from "cors";
-const cors_1 = __importDefault(require("cors"));
 const db_js_1 = require("./utils/db.js");
-const blog_1 = __importDefault(require("./routes/blog"));
+const blog_js_1 = __importDefault(require("./routes/blog.js"));
 const cloudinary_1 = require("cloudinary");
+const rabbitmq_js_1 = require("./utils/rabbitmq.js");
+const cors_1 = __importDefault(require("cors"));
 dotenv_1.default.config();
 cloudinary_1.v2.config({
     cloud_name: process.env.Cloud_Name,
-    api_key: process.env.Cloud_Api_Key,
-    api_secret: process.env.Cloud_Api_Secret,
+    api_key: process.env.api_key,
+    api_secret: process.env.api_secret,
 });
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
+(0, rabbitmq_js_1.connectRabbitMQ)();
+const port = process.env.PORT;
 async function initDB() {
     try {
         await (0, db_js_1.sql) `
@@ -57,9 +59,7 @@ async function initDB() {
         console.log("Error initDb", error);
     }
 }
-app.use("/api/v1", blog_1.default);
-const port = process.env.PORT;
-console.log(port, 'port');
+app.use("/api/v1", blog_js_1.default);
 initDB().then(() => {
     app.listen(port, () => {
         console.log(`Server is running on http://localhost:${port}`);

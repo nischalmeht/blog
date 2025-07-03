@@ -18,7 +18,7 @@ import Loading from "@/components/loading";
 
 const LoginPage = () => {
   const { isAuth, setIsAuth, loading, setLoading, setUser } = useAppData();
-
+  console.log("isAuth", isAuth);  
   if (isAuth) return redirect("/blogs");
 
   const responseGoogle = async (authResult: any) => {
@@ -26,6 +26,8 @@ const LoginPage = () => {
     try {
       const result = await axios.post(`${user_service}/api/v1/login`, {
         code: authResult["code"],
+        redirect_uri: "http://localhost:3000", 
+        // redirect_uri: "http://localhost:3000",
       });
 
       Cookies.set("token", result.data.token, {
@@ -44,11 +46,20 @@ const LoginPage = () => {
     }
   };
 
+  // const googleLogin = useGoogleLogin({
+  //   onSuccess: responseGoogle,
+  //   onError: responseGoogle,
+    
+
+  //   flow: "auth-code",
+  // });
   const googleLogin = useGoogleLogin({
     onSuccess: responseGoogle,
     onError: responseGoogle,
     flow: "auth-code",
-  });
+    ux_mode: "popup", 
+    // access_type: "offline",   
+  })
   return (
     <>
       {loading ? (

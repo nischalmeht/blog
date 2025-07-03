@@ -9,22 +9,21 @@ interface CacheInvalidationMessage {
 
 export const startCacheConsumer = async () => {
   try {
-    const connection = await amqp.connect({
-      protocol: "amqp",
-      hostname: process.env.Rabbimq_Host,
-      port: 5672,
-      username: process.env.Rabbimq_Username,
-      password: process.env.Rabbimq_Password,
-    });
-
+    // const connection = await amqp.connect({
+    //   protocol: "amqp",
+    //   hostname: process.env.Rabbimq_Host,
+    //   port: 5672,
+    //   username: process.env.Rabbimq_Username,
+    //   password: process.env.Rabbimq_Password,
+    // });
+    const connection= await amqp.connect("amqp://localhost")
     const channel = await connection.createChannel();
 
     const queueName = "cache-invalidation";
 
     await channel.assertQueue(queueName, { durable: true });
 
-    console.log("✅ Blog Service cache consumer started");
-
+    console.log("✅ Blog Service cache consumer started");    
     channel.consume(queueName, async (msg) => {
       if (msg) {
         try {
@@ -36,11 +35,11 @@ export const startCacheConsumer = async () => {
             "📩 Blog service recieved cache invalidation message",
             content
           );
-
+          console.log('invalidateCache',content,"39")
           if (content.action === "invalidateCache") {
+            console.log('invalidateCacheHii',content)
             for (const pattern of content.keys) {
               const keys = await redisClient.keys(pattern);
-
               if (keys.length > 0) {
                 await redisClient.del(keys);
 

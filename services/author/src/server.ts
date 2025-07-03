@@ -1,21 +1,27 @@
 import express from "express";
 import dotenv from "dotenv";
-// import cors from "cors";
-import cors from "cors"
 import { sql } from "./utils/db.js";
-import blogRoutes from "./routes/blog";
+import blogRoutes from "./routes/blog.js";
 import { v2 as cloudinary } from "cloudinary";
+import { connectRabbitMQ } from "./utils/rabbitmq.js";
+import cors from "cors";
+
 dotenv.config();
+
 cloudinary.config({
   cloud_name: process.env.Cloud_Name,
-  api_key: process.env.Cloud_Api_Key,
-  api_secret: process.env.Cloud_Api_Secret,
+  api_key: process.env.api_key,
+  api_secret: process.env.api_secret,
 });
-const app = express();
 
+const app = express();
 
 app.use(express.json());
 app.use(cors());
+
+connectRabbitMQ();
+
+const port = process.env.PORT;
 
 async function initDB() {
   try {
@@ -59,8 +65,7 @@ async function initDB() {
 }
 
 app.use("/api/v1", blogRoutes);
-const port = process.env.PORT;
-console.log(port,'port')
+
 initDB().then(() => {
   app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);

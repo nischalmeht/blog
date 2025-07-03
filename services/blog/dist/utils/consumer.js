@@ -9,13 +9,14 @@ const server_js_1 = require("../server.js");
 const db_js_1 = require("./db.js");
 const startCacheConsumer = async () => {
     try {
-        const connection = await amqplib_1.default.connect({
-            protocol: "amqp",
-            hostname: process.env.Rabbimq_Host,
-            port: 5672,
-            username: process.env.Rabbimq_Username,
-            password: process.env.Rabbimq_Password,
-        });
+        // const connection = await amqp.connect({
+        //   protocol: "amqp",
+        //   hostname: process.env.Rabbimq_Host,
+        //   port: 5672,
+        //   username: process.env.Rabbimq_Username,
+        //   password: process.env.Rabbimq_Password,
+        // });
+        const connection = await amqplib_1.default.connect("amqp://localhost");
         const channel = await connection.createChannel();
         const queueName = "cache-invalidation";
         await channel.assertQueue(queueName, { durable: true });
@@ -25,7 +26,9 @@ const startCacheConsumer = async () => {
                 try {
                     const content = JSON.parse(msg.content.toString());
                     console.log("📩 Blog service recieved cache invalidation message", content);
+                    console.log('invalidateCache', content, "39");
                     if (content.action === "invalidateCache") {
+                        console.log('invalidateCacheHii', content);
                         for (const pattern of content.keys) {
                             const keys = await server_js_1.redisClient.keys(pattern);
                             if (keys.length > 0) {
